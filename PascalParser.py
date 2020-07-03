@@ -1,3 +1,4 @@
+
 from plex import *
 
 class PascalParser(object):
@@ -7,26 +8,25 @@ class PascalParser(object):
 
     def doParser(self):
         token = self.scanner.nextToken()
-        if self.programNameCheck(token): # Will check if the program is named
+        self.programNameCheck(token) # Will check if the program is named
+        token = self.scanner.nextToken()
+        self.loadImports(token) # Will load imports if there are any and also look for keyword begin or else parse will fail
+        token = self.scanner.nextToken()
+        self.checkBeg(token)
+        while 1:
             token = self.scanner.nextToken()
-            if self.loadImports(token): # Will load imports if there are any and also look for keyword begin or else parse will fail
+            if self.checkEnd(token):
                 token = self.scanner.nextToken()
-                self.checkBeg(token)
-                while 1:
-                    token = self.scanner.nextToken()
-                    if self.checkEnd(token):
-                        token = self.scanner.nextToken()
-                        if not self.endOfStatement(token):
-                            break
-                        else:
-                            self.checkBeg(token)
-
-
-                    # Will continue to read until token is none which means the end of the file has been reached
-                    if token[0] is None:
-                        break
-                    self.parseToken(token)
-                print('Parsed!')
+                if not self.endOfStatement(token):
+                    break
+                else:
+                    self.checkBeg(token)
+            self.parseToken(token)
+            # Will continue to read until token is none which means the end of the file has been reached
+            if token[0] is None:
+                raise NameError("No end keyword at end of program")
+            self.parseToken(token)
+        print('Parsed!')
 
 
     def parseToken(self, token):
@@ -45,7 +45,7 @@ class PascalParser(object):
             if token[0] == 'identifier':
                 token = self.scanner.nextToken()
                 if self.endOfStatement(token): # Check for ;
-                    return True
+                    return
                 else:
                     raise NameError("Invalid end of statement, expected ;")
             else:
@@ -60,7 +60,7 @@ class PascalParser(object):
                 if token[0] == 'identifier': # Triggers fail if library name is not valid
                     token = self.scanner.nextToken()
                     if self.endOfStatement(token):  # Check for ;
-                        return True
+                        return
                     else:
                         raise NameError("Invalid end of statement, expected ;")
                 else:
@@ -68,7 +68,7 @@ class PascalParser(object):
             else: # Triggers a fail if the import statement is not valid
                 raise NameError("Expected an import keyword")
         # No imports to load and program has begin keyword
-        return True
+        return
 
     def handleIdentfier(self):
         pass
@@ -80,8 +80,11 @@ class PascalParser(object):
             token = self.scanner.nextToken()
             if token[1] == '.':
                 return True
-            else:
-                return False
+            if token[0] is None:
+                raise NameError('Expected . after end keyword')
+            if token[1] != ';':
+                raise NameError('Expected ; or . after end keyword')
+
 
     # Since the end token is not an end. then check for the beginning of another program block
     def checkBeg(self, token):
@@ -90,4 +93,6 @@ class PascalParser(object):
         else:
             raise NameError('Expected begin keyword')
 
+    def handleIdentifier(self, token):
+        pass
 

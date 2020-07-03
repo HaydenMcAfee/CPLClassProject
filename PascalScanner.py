@@ -7,6 +7,7 @@ class PascalScanner():
         digit = Range("09")
         name = letter + Rep(letter | digit)
         int = Rep1(digit)
+        strng = Str("'") + Rep(AnyBut("'")) + Str("'")
         space = Any(" \t\n")
         comment = Str("(*") + Rep(AnyBut("*)")) + Str("*)")
         symbol = Str("+", "*", "/", "=", "<", ">", "[", "]", ".", "(", ")", ":",
@@ -14,12 +15,16 @@ class PascalScanner():
                      ":=", "+=", "-=", "*=", "/=", "(* *)", "(. .)", "//", ";")
         string = Str("'") + Rep(AnyBut("'")) + Str("'")
         keyword = Str("as", "class", "dispinterface", "except", "exports", "finalization", "finally", "program",
-                      "initialization", "inline", "is", "library", "on", "out", "packed", "property",
+                      "initialization", "inline", "is", "library", "on", "out", "packed", "property", "readkey",
                       "raise", "resourcestring", "threadvar", "try", "if", "then", "else", "begin", "end", "for", "or", "uses")
+        func = Str("writeln")
+
 
         # Creation of the lexicon for use later in the scanner
         lexicon = Lexicon([
             (keyword, 'keyword'), # Handles the keyword table and will find if token is a keyword
+            (func, 'function'),
+            (strng, 'literal'),
             (name, 'identifier'),
             (int, 'integer'),
             (space | comment, IGNORE),

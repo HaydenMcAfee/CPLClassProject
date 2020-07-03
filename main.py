@@ -1,3 +1,9 @@
+# Language processor
+# Kaden Llewellyn and Hayden McAfee
+# Dr. Garrido
+# CS 4308
+
+
 from plex import *
 
 from PascalScanner import PascalScanner

@@ -5,4 +5,9 @@ uses crt;
 begin
    writeln('Hello, World!');
    readkey;
+end;
+
+begin
+   writeln('Hello, World!');
+   readkey;
 end.
