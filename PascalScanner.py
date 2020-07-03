@@ -1,6 +1,8 @@
 from plex import *
+from IdentifierTable import IdentifierTable
 
 class PascalScanner():
+    idtable = IdentifierTable()
         # The assignment of each set of valid inputs for each token type
     def __init__(self, f, filename):
         letter = Range("AZaz")
@@ -43,5 +45,5 @@ class PascalScanner():
             # The .read() function will return a tuple with the token and string and then their line and start column will be concatened to the output
             if token[0] is None:
                 break
-            print(str(token) + ": line: " + str(self.scanner.cur_line) + " col: " + str(self.scanner.start_col))
-
+            self.idtable.store(str(token) + ": line: " + str(self.scanner.cur_line) + " col: " + str(self.scanner.start_col))
+            self.idtable.getAll()

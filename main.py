@@ -26,9 +26,15 @@ def __main__():
     print('scanning')
     scanner = PascalScanner(f, filename)
 
+    print('printin id table')
+    scanner2 = PascalScanner(f, filename)
+    scanner2.doScanner()
+
     print('parsin')
     parser = PascalParser(scanner)
     parser.doParser()
+
+
 
     # print('interpreting')
     # interpreter = PascalInterpreter()
