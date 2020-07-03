@@ -1,8 +1,9 @@
-# Language processor
-# Kaden Llewellyn and Hayden McAfee
-# Dr. Garrido
 # CS 4308
-
+# W01
+# Language Processor Deliverable 2
+# 7-2-20
+# Kaden Llewellyn and Hayden McAfee
+# etc.
 
 from plex import *
 
@@ -10,11 +11,7 @@ from PascalScanner import PascalScanner
 from PascalParser import PascalParser
 from PascalInterpreter import PascalInterpreter
 
-
-
-
 filename = "program_file.txt"
-
 
 def __main__():
 
@@ -26,14 +23,9 @@ def __main__():
     print('scanning')
     scanner = PascalScanner(f, filename)
 
-    print('printin id table')
-    scanner2 = PascalScanner(f, filename)
-    scanner2.doScanner()
-
     print('parsin')
     parser = PascalParser(scanner)
     parser.doParser()
-
 
 
     # print('interpreting')

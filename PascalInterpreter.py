@@ -1,4 +1,11 @@
+# CS 4308
+# W01
+# Language Processor Deliverable 2
+# 7-2-20
+# Kaden Llewellyn and Hayden McAfee
+# etc.
 
+# Class for future use
 class PascalInterpreter(object):
     def doInterpreter(self, scanner):
         # For an interpreter:

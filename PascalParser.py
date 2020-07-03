@@ -1,11 +1,22 @@
+# CS 4308
+# W01
+# Language Processor Deliverable 2
+# 7-2-20
+# Kaden Llewellyn and Hayden McAfee
+# etc.
 
 from plex import *
+from IdentifierTable import IdentifierTable
 
 class PascalParser(object):
 
+    # Uses and Pascal scanner object as a parameter to be used during parsing
     def __init__(self, scanner):
         self.scanner = scanner
+        # Idtable object created for management of identifiers in the parsing of tokens
+        self.idtable = IdentifierTable()
 
+    # Checks the file for correct syntax and throws exceptions if there are any issues
     def doParser(self):
         token = self.scanner.nextToken()
         self.programNameCheck(token) # Will check if the program is named
@@ -13,25 +24,36 @@ class PascalParser(object):
         self.loadImports(token) # Will load imports if there are any and also look for keyword begin or else parse will fail
         token = self.scanner.nextToken()
         self.checkBeg(token)
+        # Begin checking body of program
         while 1:
             token = self.scanner.nextToken()
+            # Check if we are at the end of the program or block
             if self.checkEnd(token):
                 token = self.scanner.nextToken()
                 if not self.endOfStatement(token):
                     break
                 else:
                     self.checkBeg(token)
-            self.parseToken(token)
             # Will continue to read until token is none which means the end of the file has been reached
-            if token[0] is None:
-                raise NameError("No end keyword at end of program")
-            self.parseToken(token)
+            else:
+                # We are in the body of the program or block, but we need to make sure we are not at the end of file
+                # If we are not at the end of the file then parse the next token
+                if token[0] is None:
+                    raise NameError("No end keyword at end of program")
+                self.parseToken(token)
         print('Parsed!')
+        self.idtable.getAll()
 
-
+    # Handles the token if it is a function, keyword, or identifier
     def parseToken(self, token):
-        pass
+        if token[0] == 'function':
+            self.handleFunction(token)
+        if token[0] == 'keyword':
+            self.handleKeyword(token)
+        if token[0] == 'identifier':
+            self.handleIdentifier(token)
 
+    # Only boolean, doesn't throw exceptions
     def endOfStatement(self, token):
         if token[1] == ";":
             return True
@@ -53,6 +75,7 @@ class PascalParser(object):
         else:
             raise NameError("Program name not declared")
 
+    # Checks the validity of import statements at the top of program
     def loadImports(self, token):
         while token[1] != 'begin':
             if token[1] == 'uses': # Program not set to begin, so we check if there's an import keyword
@@ -70,9 +93,6 @@ class PascalParser(object):
         # No imports to load and program has begin keyword
         return
 
-    def handleIdentfier(self):
-        pass
-
     # Checks if there is an end keyword and if its the end of the program or block
     # Returns True if end of program, False if end of block, Excepts on anything else
     def checkEnd(self, token):
@@ -85,7 +105,6 @@ class PascalParser(object):
             if token[1] != ';':
                 raise NameError('Expected ; or . after end keyword')
 
-
     # Since the end token is not an end. then check for the beginning of another program block
     def checkBeg(self, token):
         if token[1] == "begin":
@@ -93,6 +112,42 @@ class PascalParser(object):
         else:
             raise NameError('Expected begin keyword')
 
+    # Stores the identifier if there it is not in the table
     def handleIdentifier(self, token):
-        pass
+        if not self.idtable.lookup(token[1]):
+            self.idtable.store(token[1])
+
+    # Handles a function and checks the syntax of the sentence it is used in
+    def handleFunction(self, token):
+        token = self.scanner.nextToken()
+        self.checkOpenParens(token)
+        token = self.scanner.nextToken()
+        self.checkParam(token)
+        token = self.scanner.nextToken()
+        self.checkCloseParens(token)
+        token = self.scanner.nextToken()
+        self.endOfStatement(token)
+
+    # Checks for (
+    def checkOpenParens(self, token):
+        if token[1] != '(':
+            raise NameError('Expected (')
+
+    # Checks for )
+    def checkCloseParens(self, token):
+        if token[1] != ')':
+            raise NameError('Expected )')
+
+    # Checks if parameter is valid
+    def checkParam(self, token):
+        if token[0] == 'keyword':
+            raise NameError('Invalid Parameter')
+
+    # Handles a keyword and checks the syntax of the sentence it is used in
+    def handleKeyword(self, token):
+        token = self.scanner.nextToken()
+        if not self.endOfStatement(token):
+            raise NameError('Expected ; after keyword')
+
+
 

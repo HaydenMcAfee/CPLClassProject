@@ -3,11 +3,9 @@ uses crt;
 
 (* Here the main program block starts *)
 begin
-   writeln('Hello, World!');
-   readkey;
-end;
-
-begin
+   kaden = 12;
+   hayden = 'dude';
+   someone = true;
    writeln('Hello, World!');
    readkey;
 end.

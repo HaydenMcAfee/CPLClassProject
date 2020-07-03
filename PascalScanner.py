@@ -1,9 +1,15 @@
+# CS 4308
+# W01
+# Language Processor Deliverable 2
+# 7-2-20
+# Kaden Llewellyn and Hayden McAfee
+# etc.
+
 from plex import *
-from IdentifierTable import IdentifierTable
 
 class PascalScanner():
-    idtable = IdentifierTable()
-        # The assignment of each set of valid inputs for each token type
+
+    # All the variables are use to create the attribute scanner of the class
     def __init__(self, f, filename):
         letter = Range("AZaz")
         digit = Range("09")
@@ -36,14 +42,15 @@ class PascalScanner():
 
         self.scanner = Scanner(lexicon, f, filename)
 
+    # Returns the next valid token in the file
     def nextToken(self):
         return self.scanner.read()
 
+    # Demos scanner and prints the scanned tokens with their labels
     def doScanner(self):
         while 1:
             token = self.nextToken()
             # The .read() function will return a tuple with the token and string and then their line and start column will be concatened to the output
             if token[0] is None:
                 break
-            self.idtable.store(str(token) + ": line: " + str(self.scanner.cur_line) + " col: " + str(self.scanner.start_col))
-            self.idtable.getAll()
+            print(str(token) + ": line: " + str(self.scanner.cur_line) + " col: " + str(self.scanner.start_col))
