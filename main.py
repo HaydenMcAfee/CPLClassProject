@@ -7,10 +7,8 @@
 
 from plex import *
 
-from PascalScanner import PascalScanner
-from PascalParser import PascalParser
 from PascalInterpreter import PascalInterpreter
-
+from PascalScanner import PascalScanner
 filename = "program_file.txt"
 
 def __main__():
@@ -20,12 +18,12 @@ def __main__():
     # perform lexical and syntax checking
     # maybe convert to intermediate form
     # execute it
-    print('scanning')
     scanner = PascalScanner(f, filename)
 
-    print('parsin')
-    parser = PascalParser(scanner)
-    parser.doParser()
+    # scanner2.doScanner()
+
+    interpreter = PascalInterpreter(scanner)
+    interpreter.Execute()
 
 
     # print('interpreting')

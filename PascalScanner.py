@@ -21,7 +21,7 @@ class PascalScanner():
         symbol = Str("+", "*", "/", "=", "<", ">", "[", "]", ".", "(", ")", ":",
                      "^", "@", "{", "}", "$", "#", "<=", ">=",
                      ":=", "+=", "-=", "*=", "/=", "(* *)", "(. .)", "//", ";")
-        string = Str("'") + Rep(AnyBut("'")) + Str("'")
+        # string = Str("'") + Rep(AnyBut("'")) + Str("'")
         keyword = Str("as", "class", "dispinterface", "except", "exports", "finalization", "finally", "program",
                       "initialization", "inline", "is", "library", "on", "out", "packed", "property", "readkey",
                       "raise", "resourcestring", "threadvar", "try", "if", "then", "else", "begin", "end", "for", "or", "uses")
@@ -36,11 +36,12 @@ class PascalScanner():
             (name, 'identifier'),
             (int, 'integer'),
             (space | comment, IGNORE),
-            (string, 'string'),
+            # (string, 'string'),
             (symbol, 'symbol')
         ])
 
         self.scanner = Scanner(lexicon, f, filename)
+        self.initial = Scanner(lexicon, f, filename)
 
     # Returns the next valid token in the file
     def nextToken(self):
@@ -48,9 +49,13 @@ class PascalScanner():
 
     # Demos scanner and prints the scanned tokens with their labels
     def doScanner(self):
+        initial = self.scanner.initial_state
         while 1:
             token = self.nextToken()
             # The .read() function will return a tuple with the token and string and then their line and start column will be concatened to the output
             if token[0] is None:
+                self.scanner.begin(initial)
                 break
             print(str(token) + ": line: " + str(self.scanner.cur_line) + " col: " + str(self.scanner.start_col))
+
+

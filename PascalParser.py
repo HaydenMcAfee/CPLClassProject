@@ -11,10 +11,10 @@ from IdentifierTable import IdentifierTable
 class PascalParser(object):
 
     # Uses and Pascal scanner object as a parameter to be used during parsing
-    def __init__(self, scanner):
+    def __init__(self, scanner, inter):
         self.scanner = scanner
         # Idtable object created for management of identifiers in the parsing of tokens
-        self.idtable = IdentifierTable()
+        self.inter = inter
 
     # Checks the file for correct syntax and throws exceptions if there are any issues
     def doParser(self):
@@ -41,8 +41,6 @@ class PascalParser(object):
                 if token[0] is None:
                     raise NameError("No end keyword at end of program")
                 self.parseToken(token)
-        print('Parsed!')
-        self.idtable.getAll()
 
     # Handles the token if it is a function, keyword, or identifier
     def parseToken(self, token):
@@ -52,6 +50,21 @@ class PascalParser(object):
             self.handleKeyword(token)
         if token[0] == 'identifier':
             self.handleIdentifier(token)
+        if token[0] == 'literal' or 'integer':
+            self.handleValue(token)
+
+    # Handles the token when type is identifier
+    def handleIdentifier(self, token):
+        self.interpretToken(token) # Handles whether to initialize the identifier
+        token = self.scanner.nextToken()
+        self.interpretToken(token)
+
+    def handleValue(self, token):
+        self.interpretToken(token)
+
+
+
+
 
     # Only boolean, doesn't throw exceptions
     def endOfStatement(self, token):
@@ -63,8 +76,10 @@ class PascalParser(object):
     # We want to check if the program keyword is used and the following token is an identifier but not to store it
     def programNameCheck(self, token):
         if token[1] == 'program':
+            self.interpretToken(token)
             token = self.scanner.nextToken()
             if token[0] == 'identifier':
+                self.interpretToken(token)
                 token = self.scanner.nextToken()
                 if self.endOfStatement(token): # Check for ;
                     return
@@ -79,8 +94,10 @@ class PascalParser(object):
     def loadImports(self, token):
         while token[1] != 'begin':
             if token[1] == 'uses': # Program not set to begin, so we check if there's an import keyword
+                self.interpretToken(token)
                 token = self.scanner.nextToken()
                 if token[0] == 'identifier': # Triggers fail if library name is not valid
+                    self.interpretToken(token)
                     token = self.scanner.nextToken()
                     if self.endOfStatement(token):  # Check for ;
                         return
@@ -108,14 +125,10 @@ class PascalParser(object):
     # Since the end token is not an end. then check for the beginning of another program block
     def checkBeg(self, token):
         if token[1] == "begin":
+            self.interpretToken(token)
             return True
         else:
             raise NameError('Expected begin keyword')
-
-    # Stores the identifier if there it is not in the table
-    def handleIdentifier(self, token):
-        if not self.idtable.lookup(token[1]):
-            self.idtable.store(token[1])
 
     # Handles a function and checks the syntax of the sentence it is used in
     def handleFunction(self, token):
@@ -148,6 +161,15 @@ class PascalParser(object):
         token = self.scanner.nextToken()
         if not self.endOfStatement(token):
             raise NameError('Expected ; after keyword')
+
+    # Calls the interpreter class for the execution of the instruction
+    def interpretToken(self, token):
+        # Our actual token
+        name = token[1]
+        # The tokens type
+        tType = token[0]
+        # Call the interpret method with the name, type and idtable
+        self.inter.Interpret(name, tType, self.idtable)
 
 
 
