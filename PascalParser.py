@@ -15,8 +15,6 @@ class PascalParser(object):
         self.scanner = scanner
         # Idtable object created for management of identifiers in the parsing of tokens
         self.inter = inter
-        self.checkSemiFlag = False
-
 
     # Checks the file for correct syntax and throws exceptions if there are any issues
     def doParser(self):
@@ -46,38 +44,26 @@ class PascalParser(object):
 
     # Handles the token if it is a function, keyword, or identifier
     def parseToken(self, token):
-        if token[1] == '=':
-            self.interpretToken(token)
-            return
-        elif token[0] == 'boolean':
-            self.handleValue(token)
-            return
-        elif token[0] == 'function':
+        if token[0] == 'function':
             self.handleFunction(token)
-            return
-        elif token[0] == 'keyword':
+        if token[0] == 'keyword':
             self.handleKeyword(token)
-            return
-        elif token[0] == 'identifier':
+        if token[0] == 'identifier':
             self.handleIdentifier(token)
-            return
-        elif token[0] == 'literal' or 'integer':
+        if token[0] == 'literal' or 'integer':
             self.handleValue(token)
-            return
-
-
 
     # Handles the token when type is identifier
     def handleIdentifier(self, token):
         self.interpretToken(token) # Handles whether to initialize the identifier
+        token = self.scanner.nextToken()
+        self.interpretToken(token)
 
     def handleValue(self, token):
-        self.interpretToken(token) # Interprets the value based on states
-        if self.checkSemiFlag == True: # If we have just set a value then we need to be at the end of the sentence
-            token = self.scanner.nextToken()
-            if not self.endOfStatement(token):
-                raise NameError("Invalid end of statement, expected ;")
-            self.checkSemiFlag = False # We have a correct end of statement and now we can move onto the next statement
+        self.interpretToken(token)
+
+
+
 
 
     # Only boolean, doesn't throw exceptions
@@ -146,12 +132,10 @@ class PascalParser(object):
 
     # Handles a function and checks the syntax of the sentence it is used in
     def handleFunction(self, token):
-        self.interpretToken(token)
         token = self.scanner.nextToken()
         self.checkOpenParens(token)
         token = self.scanner.nextToken()
         self.checkParam(token)
-        self.interpretToken(token)
         token = self.scanner.nextToken()
         self.checkCloseParens(token)
         token = self.scanner.nextToken()
@@ -174,7 +158,6 @@ class PascalParser(object):
 
     # Handles a keyword and checks the syntax of the sentence it is used in
     def handleKeyword(self, token):
-        self.interpretToken(token)
         token = self.scanner.nextToken()
         if not self.endOfStatement(token):
             raise NameError('Expected ; after keyword')
@@ -186,7 +169,7 @@ class PascalParser(object):
         # The tokens type
         tType = token[0]
         # Call the interpret method with the name, type and idtable
-        self.inter.Interpret(name, tType)
+        self.inter.Interpret(name, tType, self.idtable)
 
 
 

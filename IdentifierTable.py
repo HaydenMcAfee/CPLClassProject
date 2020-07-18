@@ -9,83 +9,33 @@
 class Identifier(object):
     name = ""
     value = ""
-    type = ""
-    def setType(self, type):
-        self.type = type
-    def getType(self):
-        return self.type
     def setValue(self, val):
         self.value = val
     def getValue(self):
         return self.value
-    def setName(self, name):
-        self.name = name
-    def getName(self):
-        return self.name
 
 # The identifier table holds many identifiers and can be checked and stored to
 class IdentifierTable(object):
-    idTable = []
+    id_table = Identifier[100]
 
+    # Todo: I need this to return true if the name exists, only takes in a string
     # Returns true if identifier is in table, false if not
     def lookup(self, name):
-        temp = Identifier()
-        for id in self.idTable:
-            temp = id
-            if temp.getName() == name:
+        for id in self.id_table:
+            if self.id_table[id] == name:
                 return True
-        return False
+            else: return False
 
 
+    # Todo: I need this to store the name of the identifier in the table at a the end index
     # Stores identifier in table
     def store(self, ident):
-        temp = Identifier()
-        temp.setName(ident)
-        if len(self.idTable) == 0:
-            self.idTable.append(temp)
-        else:
-           self.idTable.append(temp)
+        for id in self.id_table:
+            if self.id_table[id] == ident:
+                self.id_table[5].set
 
-    def storeVal(self, name, val, type):
-        temp = Identifier()
-        for id in self.idTable:
-            temp = id
-            if temp.getName() == name:
-                temp.setValue(val)
-                temp.setType(type)
-                id = temp
-                
-    def getVal(self, name):
-        temp = Identifier()
-        for id in self.idTable:
-            temp = id
-            if temp.getName() == name:
-                return temp.getValue()
-
-    def getType(self, name):
-        temp = Identifier()
-        for id in self.idTable:
-            temp = id
-            if temp.getName() == name:
-                return temp.getType()
-
+    # Todo: I need a method to modify the indentifier by finding it with its name and setting that Identifier objects value field
 
     # Returns all of the stored identifiers from the table
     def getAll(self):
-        temp = Identifier()
-        for id in self.idTable:
-            temp = id
-            print(str(temp.getName()) + " = " + str(temp.getValue()))
-
-# Method tests
-# def __main__():
-#
-#     idTable = IdentifierTable()
-#
-#     idTable.store("hello")
-#     print(idTable.lookup("hello"))
-#     idTable.storeVal("hello",1)
-#     idTable.getAll()
-#     print(idTable.getVal("hello"))
-#
-# __main__()
+        print(*self.id_table, sep = "\n")

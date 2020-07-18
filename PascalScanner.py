@@ -11,7 +11,6 @@ class PascalScanner():
 
     # All the variables are use to create the attribute scanner of the class
     def __init__(self, f, filename):
-        bool = Str("false", "true")
         letter = Range("AZaz")
         digit = Range("09")
         name = letter + Rep(letter | digit)
@@ -31,7 +30,6 @@ class PascalScanner():
 
         # Creation of the lexicon for use later in the scanner
         lexicon = Lexicon([
-            (bool, 'boolean'),
             (keyword, 'keyword'), # Handles the keyword table and will find if token is a keyword
             (func, 'function'),
             (strng, 'literal'),
