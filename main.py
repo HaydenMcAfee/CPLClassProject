@@ -24,6 +24,7 @@ def __main__():
 
     interpreter = PascalInterpreter(scanner)
     interpreter.Execute()
+    interpreter.idTable.getAll()
 
 
     # print('interpreting')
