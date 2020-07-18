@@ -7,5 +7,6 @@ begin
    hayden = 'dude';
    someone = true;
    writeln('Hello, World!');
-   readkey;
+   input = readkey;
+   writeln(input);
 end.
