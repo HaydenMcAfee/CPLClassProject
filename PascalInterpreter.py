@@ -37,6 +37,8 @@ class PascalInterpreter():
                 self.checkOp(token)
                 return
             elif self.bodyState == 2: # Assigns the token value to the current identifier
+                if tType == 'literal': # Choppy chop
+                    token = token[1:-1]
                 self.storeValue(token,tType)
                 return
             elif tType == 'function':
@@ -111,11 +113,7 @@ class PascalInterpreter():
                     if not self.idTable.lookup(token):
                         raise NameError('Value not initialized')
                     token = self.idTable.getVal(token)
-                    tType = self.idTable.getType(token)
-                if tType == 'literal':
-                    print(token[1:-1])
-                else:
-                    print(token)
+                print(token)
                 self.bodyState = 0
 
 

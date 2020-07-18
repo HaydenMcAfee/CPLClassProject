@@ -4,9 +4,9 @@ uses crt;
 (* Here the main program block starts *)
 begin
    kaden = 12;
-   hayden = 'dude';
+   hayden = 'dude'
    someone = true;
-   writeln('Hello, World!');
-   input = readkey;
-   writeln(input);
+   writeln(someone);
+   writeln(hayden);
+   writeln(kaden);
 end.

@@ -46,6 +46,7 @@ class IdentifierTable(object):
         else:
            self.idTable.append(temp)
 
+    # Stores the value for the corresponding identifier
     def storeVal(self, name, val, type):
         temp = Identifier()
         for id in self.idTable:
@@ -54,7 +55,8 @@ class IdentifierTable(object):
                 temp.setValue(val)
                 temp.setType(type)
                 id = temp
-                
+
+    # Gets the corresponding value for the indentifier
     def getVal(self, name):
         temp = Identifier()
         for id in self.idTable:
@@ -62,6 +64,7 @@ class IdentifierTable(object):
             if temp.getName() == name:
                 return temp.getValue()
 
+    # Gets the corresponding type for the indentifier
     def getType(self, name):
         temp = Identifier()
         for id in self.idTable:
